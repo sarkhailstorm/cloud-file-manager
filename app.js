@@ -6,14 +6,14 @@ const userRouter = require('./routes/user.routes');
 const indexRouter = require('./routes/index.routes');
 const connectToDB = require('./config/db');
 
-const path = require('path');
-app.set('views', path.join(__dirname, 'views'));
-
 // Load environment variables
 dotenv.config();
 
 // Connect to the database
 connectToDB();
+
+const path = require('path');
+app.set('views', path.join(__dirname, 'views'));
 
 // Set view engine
 app.set('view engine', 'ejs');
