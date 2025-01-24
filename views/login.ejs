@@ -10,7 +10,9 @@
 
 <body class="bg-gray-100 dark:bg-gray-800 h-screen w-screen flex items-center justify-center flex-col gap-16">
     <div class="flex items-center justify-center flex-col gap-3">
-        <h1 class="font-semibold text-3xl text-white">Welcome to our login page</h1>
+        <h1
+            class="font-semibold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 leading-relaxed">
+            Login in to your account</h1>
         <h3 class="font-medium text-xl text-gray-400">Please enter your credentials</h3>
     </div>
 
@@ -19,15 +21,13 @@
             <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
             <input type="text" id="username"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                name="username"
-                placeholder="John" required />
+                name="username" placeholder="John" required />
         </div>
         <div class="mb-6">
             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
             <input type="password" id="password"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                name="password"
-                placeholder="•••••••••" required />
+                name="password" placeholder="•••••••••" required />
         </div>
         <div class="flex items-center justify-center w-96">
             <button type="submit"
