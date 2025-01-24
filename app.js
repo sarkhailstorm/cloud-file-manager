@@ -1,30 +1,30 @@
 const express = require('express');
 const app = express();
-const userRouter = require('./routes/user.routes')
-
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const userRouter = require('./routes/user.routes');
+const indexRouter = require('./routes/index.routes');
+const connectToDB = require('./config/db');
+
+// Load environment variables
 dotenv.config();
 
-const connectToDB = require('./config/db');
+// Connect to the database
 connectToDB();
 
-const cookieParser = require('cookie-parser');
-
-const indexRouter = require('./routes/index.routes');
-
-
-
+// Set view engine
 app.set('view engine', 'ejs');
 
-app.use(cookieParser());
+// Middleware configuration
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+app.use(cookieParser()); 
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-
+// Routes
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 
-
-app.listen(4000, () => {
-    console.log("Server is running on port 3000.");
-})
+// Start server
+app.listen(3000, () => {
+    console.log('Server is running on port 3000.');
+});

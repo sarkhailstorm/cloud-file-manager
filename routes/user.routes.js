@@ -7,25 +7,37 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const supabase = require('../config/supabase.config');
 
+// Multer configuration for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Test Route
+// Test route
 router.get('/test', (req, res) => {
     res.send('User test route');
 });
 
-// Register Route
-router.post('/register',
-    body('username').trim().isLength({ min: 5 }),
-    body('email').trim().isEmail().isLength({ min: 12 }),
-    body('password').trim().isLength({ min: 3 }),
+// Render registration page
+router.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// Render login page
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+// Registration route
+router.post(
+    '/register',
+    body('username').trim().isLength({ min: 5 }).withMessage('Username must be at least 5 characters long.'),
+    body('email').trim().isEmail().withMessage('Email must be a valid email address.'),
+    body('password').trim().isLength({ min: 3 }).withMessage('Password must be at least 3 characters long.'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: "Invalid Data"
+                message: 'Invalid Data',
             });
         }
 
@@ -36,34 +48,38 @@ router.post('/register',
         const newUser = await userModel.create({
             username,
             email,
-            password: hashPassword
+            password: hashPassword,
         });
 
         res.json(newUser);
     }
 );
 
-// Login Route
-router.post('/login',
-    body('username').trim().isLength({ min: 4 }),
-    body('password').trim().isLength({ min: 5 }),
+// Login route
+router.post(
+    '/login',
+    body('username').isLength({ min: 4 }).withMessage('Username must be at least 4 characters long'),
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
     async (req, res) => {
+        console.log('Body received:', req.body); // Debug log to check incoming data
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: 'Invalid Data'
+                message: 'Invalid Data',
             });
         }
 
         const { username, password } = req.body;
 
-        const user = await userModel.findOne({ username });
+        const user = await userModel.findOne({
+            username: username,
+        });
 
         if (!user) {
             return res.status(400).json({
-                message: 'Username or password is incorrect'
+                message: 'Username or password is incorrect',
             });
         }
 
@@ -71,15 +87,18 @@ router.post('/login',
 
         if (!isMatch) {
             return res.status(400).json({
-                message: 'Username or password is incorrect'
+                message: 'Username or password is incorrect',
             });
         }
 
-        const token = jwt.sign({
-            userId: user._id,
-            email: user.email,
-            username: user.username
-        }, process.env.JWT_SECRET);
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                email: user.email,
+                username: user.username,
+            },
+            process.env.JWT_SECRET
+        );
 
         res.cookie('token', token);
 
@@ -87,23 +106,23 @@ router.post('/login',
     }
 );
 
-// File Upload to Supabase Route
+// File upload to Supabase
 router.post('/upload', upload.single('file'), async (req, res) => {
     if (!req.file) {
-        return res.status(400).send("No file uploaded.");
+        return res.status(400).send('No file uploaded.');
     }
 
     try {
         const { data, error } = await supabase.storage
             .from(process.env.SUPABASE_BUCKET)
-            .upload(`${Date.now()}-${req.file.originalname}`, req.file.buffer, {
+            .upload(`${req.file.originalname}-${Date.now()}`, req.file.buffer, {
                 contentType: req.file.mimetype,
                 upsert: true,
             });
 
         if (error) {
-            console.error("Supabase Storage Error:", error);
-            return res.status(500).send("Error uploading file to Supabase.");
+            console.error('Supabase Storage Error:', error);
+            return res.status(500).send('Error uploading file to Supabase.');
         }
 
         const { data: publicUrlData } = supabase.storage
@@ -111,14 +130,14 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             .getPublicUrl(data.path);
 
         res.json({
-            message: "File uploaded successfully.",
+            message: 'File uploaded successfully.',
             fileName: req.file.originalname,
             publicUrl: publicUrlData.publicUrl,
         });
-    }
+    } 
     catch (err) {
-        console.error("Error:", err);
-        res.status(500).send("An error occurred while uploading the file.");
+        console.error('Error:', err);
+        res.status(500).send('An error occurred while uploading the file.');
     }
 });
 
