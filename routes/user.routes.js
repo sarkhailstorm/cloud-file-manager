@@ -51,7 +51,7 @@ router.post(
             password: hashPassword,
         });
 
-        res.json(newUser);
+        res.redirect('/user/login');
     }
 );
 
@@ -101,8 +101,7 @@ router.post(
         );
 
         res.cookie('token', token);
-
-        res.send('Logged In');
+        res.redirect('/home');
     }
 );
 
@@ -140,5 +139,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         res.status(500).send('An error occurred while uploading the file.');
     }
 });
+
 
 module.exports = router;

@@ -8,8 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-800 h-screen w-screen flex items-center justify-center">
-
+<body class="bg-gray-100 dark:bg-gray-800 h-screen w-screen flex items-center justify-center flex-col gap-12">
+    <div class="flex items-center justify-center flex-col gap-4">
+        <h1 class="text-white text-3xl font-semibold tracking-[0.04em]">Register</h1>
+        <a class="text-yellow-500 hover:text-yellow-600 ease-in-ease-out duration-200" href="/user/login"><span class="text-gray-300">or</span> sign in to your account</a>
+    </div>
     <form action="/user/register" method="post" class="w-96">
         <div class="mb-6">
             <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
