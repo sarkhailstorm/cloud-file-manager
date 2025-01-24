@@ -13,7 +13,7 @@ const upload = multer({ storage: storage });
 
 // Test route
 router.get('/test', (req, res) => {
-    res.send('User test route');
+    res.render('register');
 });
 
 // Render registration page

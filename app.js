@@ -23,6 +23,9 @@ app.use(cookieParser());
 // Routes
 app.use('/', indexRouter);
 app.use('/user', userRouter);
+app.get('/', (req, res) => {
+    res.render('register');
+})
 
 // Start server
 app.listen(3000, () => {
