@@ -9,7 +9,6 @@ router.get('/home', authMiddleWare, async (req, res) => {
     const userFiles = await fileModel.find({
         user: req.user.userId
     })
-
     console.log(userFiles);
     res.render('home', {
         files: userFiles
@@ -42,6 +41,43 @@ router.get('/download/:path', authMiddleWare, async (req, res) => {
 
     res.redirect(data.signedUrl);
 });
+
+router.get('/delete/:path', authMiddleWare, async (req, res) => {
+    const loggedInUserId = req.user.userId;
+    const path = req.params.path;
+
+    try {
+        const file = await fileModel.findOne({
+            user: loggedInUserId,
+            path: path
+        })
+    
+        if (!file) {
+            return res.status(404).json({
+                message: "File not found or unauthorized."
+            })
+        }
+        const { data, error } = await supabase.storage
+            .from(process.env.SUPABASE_BUCKET)
+            .remove([path]);
+        
+        if (error) {
+            return res.status(500).json({
+                message: 'Error deleting file from storage.', error
+            })
+        }
+        
+        await fileModel.deleteOne({path: path});
+    
+        res.redirect('/home');
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: 'File not found or unauthorized.'
+        })
+    }
+
+})
 
 
 module.exports = router

@@ -109,12 +109,11 @@ router.post(
 
 // File upload to Supabase
 router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) => {
-
-
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
 
+    
     try {
         const { data, error } = await supabase.storage
             .from(process.env.SUPABASE_BUCKET)
@@ -132,19 +131,13 @@ router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) =
             .from(process.env.SUPABASE_BUCKET)
             .getPublicUrl(data.path);
 
-        res.json({
-            message: 'File uploaded successfully.',
-            fileName: req.file.originalname,
-            publicUrl: publicUrlData.publicUrl,
-        });
-
         const newFile = await fileModel.create({
             path: data.path,
             originalname: req.file.originalname,
             user: req.user.userId
         })
-    
-        res.json(newFile);
+
+        return res.redirect('/home');
     } 
     catch (err) {
         console.error('Error:', err);
