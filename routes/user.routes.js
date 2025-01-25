@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const supabase = require('../config/supabase.config');
+const fileModel = require('../models/files.models');
+const authMiddleWare = require('../middleware/auth');
 
 // Multer configuration for file uploads
 const storage = multer.memoryStorage();
@@ -61,7 +63,7 @@ router.post(
     body('username').isLength({ min: 4 }).withMessage('Username must be at least 4 characters long'),
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
     async (req, res) => {
-        console.log('Body received:', req.body); // Debug log to check incoming data
+        console.log('Body received:', req.body); 
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -106,7 +108,9 @@ router.post(
 );
 
 // File upload to Supabase
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) => {
+
+
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
@@ -133,6 +137,14 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             fileName: req.file.originalname,
             publicUrl: publicUrlData.publicUrl,
         });
+
+        const newFile = await fileModel.create({
+            path: data.path,
+            originalname: req.file.originalname,
+            user: req.user.userId
+        })
+    
+        res.json(newFile);
     } 
     catch (err) {
         console.error('Error:', err);
