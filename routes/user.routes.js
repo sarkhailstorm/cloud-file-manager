@@ -44,6 +44,26 @@ router.post(
         }
 
         const { username, email, password } = req.body;
+        
+        const existingUserName = await userModel.findOne({
+            username
+        })
+
+        if (existingUserName) {
+            res.status(400).json({
+                message: 'Username already exists'
+            })
+        }
+
+        const existingEmail = await userModel.findOne({
+            email
+        })
+
+        if (existingEmail) {
+            res.status(400).json({
+                message: 'Email already exists'
+            })
+        }
 
         const hashPassword = await bcrypt.hash(password, 10);
 
@@ -63,7 +83,7 @@ router.post(
     body('username').isLength({ min: 4 }).withMessage('Username must be at least 4 characters long'),
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
     async (req, res) => {
-        console.log('Body received:', req.body); 
+        console.log('Body received:', req.body);
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -113,7 +133,6 @@ router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) =
         return res.status(400).send('No file uploaded.');
     }
 
-    
     try {
         const { data, error } = await supabase.storage
             .from(process.env.SUPABASE_BUCKET)
@@ -127,10 +146,6 @@ router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) =
             return res.status(500).send('Error uploading file to Supabase.');
         }
 
-        const { data: publicUrlData } = supabase.storage
-            .from(process.env.SUPABASE_BUCKET)
-            .getPublicUrl(data.path);
-
         const newFile = await fileModel.create({
             path: data.path,
             originalname: req.file.originalname,
@@ -138,7 +153,7 @@ router.post('/upload', authMiddleWare, upload.single('file'), async (req, res) =
         })
 
         return res.redirect('/home');
-    } 
+    }
     catch (err) {
         console.error('Error:', err);
         res.status(500).send('An error occurred while uploading the file.');

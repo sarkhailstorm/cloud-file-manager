@@ -30,6 +30,11 @@ app.get('/', (req, res) => {
     res.render('register');
 })
 
+process.on('uncaughtException', (err) => {
+    console.log('Uncaught Exception');
+    console.log(err);
+})
+
 // Start server
 app.listen(3000, () => {
     console.log('Server is running on port 3000.');
