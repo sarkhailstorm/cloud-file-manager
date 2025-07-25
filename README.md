@@ -14,17 +14,17 @@ This project provides a simple and user-friendly platform where users can **sign
 - Cloud storage integration with **Supabase**
 - REST API endpoints for file operations
 - EJS-based server-side rendering for UI
-- Secure and scalable backend with **Node.js**, **Express.js**, and **MongoDB**
+- Secure and scalable backend with **Node.js**, **Express**, and **MongoDB**
 
 ## Technologies Used
 
+- **React**
 - **Node.js**  
-- **Express.js**  
+- **Express**  
 - **MongoDB**  
 - **Supabase (Cloud Storage)**  
 - **JavaScript**  
 - **JWT (JSON Web Tokens)**  
-- **EJS (Templating)**
 - **Flowbite (UI)**
 
 ## Learning Highlights
