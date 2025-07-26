@@ -13,7 +13,6 @@ This project provides a simple and user-friendly platform where users can **sign
 - File upload, retrieval, and deletion
 - Cloud storage integration with **Supabase**
 - REST API endpoints for file operations
-- EJS-based server-side rendering for UI
 - Secure and scalable backend with **Node.js**, **Express**, and **MongoDB**
 
 ## Technologies Used
